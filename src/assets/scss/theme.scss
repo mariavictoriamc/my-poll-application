@@ -1,0 +1,26 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$my-poll-application-primary: mat.define-palette(mat.$indigo-palette);
+$my-poll-application-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+$my-poll-application-warn: mat.define-palette(mat.$red-palette);
+
+$my-poll-application-theme: mat.define-light-theme((
+  color: (
+    primary: $my-poll-application-primary,
+    accent: $my-poll-application-accent,
+    warn: $my-poll-application-warn,
+  )
+));
+
+@include mat.all-component-themes($my-poll-application-theme);
+
+:root {
+  --mpa-color-primary: #3f51b5;
+  --mpa-color-accent: #2b0a3d;
+  --mpa-color-dark: #4b4b4b;
+  --mpa-color-light: #ececec;
+  --mpa-color-warn: #a40808;
+  --mpa-color-grey: #c8c8c8;
+}

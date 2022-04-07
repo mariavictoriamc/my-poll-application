@@ -1,0 +1,19 @@
+.header {
+    background: var(--mpa-color-primary);
+    color: var(--mpa-color-light);
+    padding: 15px 0;
+    p {
+        margin: 0;
+    }
+    span {
+        font-weight: 700;
+    }
+    .logout a {
+        display: block;
+        cursor: pointer;
+        text-align: end;
+        &:hover {
+           text-decoration: underline; 
+        }
+    }
+}

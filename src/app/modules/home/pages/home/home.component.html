@@ -1,0 +1,96 @@
+<app-header></app-header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="title">
+        <p>Title</p>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <div class="form">
+        <form [formGroup]="form">
+          <div class="row">
+            <div class="col-10">
+              <mat-form-field>
+                <mat-label>Question</mat-label>
+                <input matInput placeholder="Question" formControlName="question">
+              </mat-form-field>
+            </div>
+          </div>
+  
+          <div class="row">
+            <div class="col-10">
+              <mat-form-field>
+                <mat-label>Answer 1</mat-label>
+                <input matInput placeholder="Answer 1" formControlName="answer">
+              </mat-form-field>
+            </div>
+            <div class="col-2">
+              <button mat-mini-fab color="warn" class="icon-remove" (click)="remove()">
+                <i class="icofont-ui-delete"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-10">
+              <mat-form-field>
+                <mat-label>Type an answer</mat-label>
+                <input matInput placeholder="Type an answer" formControlName="add">
+              </mat-form-field>
+            </div>
+            <div class="col-2">
+              <button mat-mini-fab color="primary" class="icon-add" (click)="add()">
+                <i class="icofont-ui-add"></i>
+              </button>
+            </div>
+          </div>
+        </form>
+  
+        <div class="footer">
+          <div class="row">
+            <div class="col-12 col-md-6">
+                <p>{{ lengthAnswers }}/{{ totalAnswers }} possible answers</p>
+            </div>
+            <div class="col-12 col-md-6">
+              <button mat-raised-button (click)="reset()">Reset</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="poll">
+        <p>{{ question }}</p>
+
+        <form>
+          <mat-radio-group class="radio-group">
+            <mat-radio-button class="radio-button" color="primary" *ngFor="let op of options" [value]="op">
+              {{ op }}
+            </mat-radio-button>
+          </mat-radio-group>
+
+          <div class="poll-button">
+            <button mat-raised-button color="primary">Vote</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="col-4">
+      <div class="chart">
+        <p>{{ question }}</p>
+
+        * colocar gráfico *
+
+        <div class="total-votes">
+          <p>Total votes: {{ totalVotes }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
