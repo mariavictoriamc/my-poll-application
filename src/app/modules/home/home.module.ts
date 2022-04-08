@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
+import { NgChartsModule } from 'ng2-charts';
 import { HomeComponent } from './pages/home/home.component';
 import { HomeRoutingModule } from './home-routing.module';
 import { HeaderModule } from 'src/app/shared/header/header.module';
@@ -20,6 +21,7 @@ import { HeaderModule } from 'src/app/shared/header/header.module';
     MatButtonModule,
     MatIconModule,
     MatRadioModule,
+    NgChartsModule,
     HomeRoutingModule,
     HeaderModule
   ],

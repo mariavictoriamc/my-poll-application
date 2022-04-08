@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col-12">
       <div class="title">
-        <p>Title</p>
+        <p>My Poll Application</p>
       </div>
     </div>
   </div>
@@ -75,7 +75,7 @@
           </mat-radio-group>
 
           <div class="poll-button">
-            <button mat-raised-button color="primary">Vote</button>
+            <button mat-raised-button color="primary" (click)="vote()">Vote</button>
           </div>
         </form>
       </div>
@@ -85,7 +85,13 @@
       <div class="chart">
         <p>{{ question }}</p>
 
-        * colocar gráfico *
+        <canvas baseChart 
+          [datasets]="barChartData"
+          [labels]="barChartLabels"
+          [options]="barChartOptions"
+          [legend]="barChartLegend"
+          [type]="barChartType">
+        </canvas>
 
         <div class="total-votes">
           <p>Total votes: {{ totalVotes }}</p>

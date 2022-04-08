@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ChartOptions, ChartType, ChartDataset } from 'chart.js';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +15,15 @@ export class HomeComponent implements OnInit {
   question!: string;
   options!: number[];
   totalVotes!: number;
+  barChartOptions: ChartOptions = {
+    responsive: true
+  };
+  barChartType: ChartType = 'bar';
+  barChartLabels: string[] = ['3.14', '3.1416', '3.14159264']; // array with answers
+  barChartLegend = false;
+  barChartData: ChartDataset[] = [
+    { data: [4, 2, 7], label: 'Votes:', backgroundColor: '#ff4081' } // array with votes
+  ];
 
   constructor(private formBuilder: FormBuilder) {}
 
@@ -36,5 +46,7 @@ export class HomeComponent implements OnInit {
   add(): void {}
 
   reset(): void {}
+
+  vote(): void {}
 
 }
