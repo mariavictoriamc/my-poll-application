@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit {
   question$!: Observable<string>;
   answers$!: Observable<any>;
   totalVotes!: number;
-
   barChartOptions: ChartOptions = {
     responsive: true
   };
@@ -87,12 +86,16 @@ export class HomeComponent implements OnInit {
   removeAnswer(index: number): void {
     this.answersArray.removeAt(index);
     this.store.dispatch(removeAnswer({index}));
+    this.clearChart();
+    this.updateChart();
   }
 
   reset(): void {
     this.answersArray.clear();
     this.form.reset();
     this.store.dispatch(reset());
+    this.clearChart();
+    this.updateChart();
   }
 
   getNumberAnswersMade(): number {
@@ -105,11 +108,9 @@ export class HomeComponent implements OnInit {
 
   vote(): void {
     const vote = this.formRadios.value;
-
     let startLabels: any[] = [];
     let startData: any[] = [];
     let newAnswers: any[] = [];
-    
     this.answers$.subscribe(answers => {
       answers.forEach((answer: Answer) => {
         startLabels.push(answer?.text);
@@ -128,7 +129,7 @@ export class HomeComponent implements OnInit {
       this.barChartLabels = startLabels;
       this.barChartData = [{ data: startData, label: 'Votes:', backgroundColor: '#3f51b5' }];
       this.formRadios.reset();
-      this.chart?.chart?.update();
+      this.updateChart();
       return;
     });
     this.getSumContractsValue(newAnswers);
@@ -144,6 +145,16 @@ export class HomeComponent implements OnInit {
     });
     const reducer = (accumulator: any, currentValue: any) => accumulator + currentValue;
     this.totalVotes = values?.reduce(reducer, 0);
+  }
+
+  updateChart(): void {
+    this.chart?.chart?.update();
+  }
+
+  clearChart(): void {
+    this.totalVotes = 0;
+    this.barChartData = [];
+    this.barChartLabels = [];
   }
 
 }
