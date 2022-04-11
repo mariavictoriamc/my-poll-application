@@ -7,12 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
-  userType: string = 'Owner';
-
   constructor() {}
 
   ngOnInit(): void {}
-
-  logout(): void {}
 
 }
