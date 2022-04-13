@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
   requiredField: string = 'Required field';
   question$!: Observable<string>;
   answers$!: Observable<any>;
-  totalVotes!: number;
+  totalVotes: number = 0;
   barChartOptions: ChartOptions = {
     responsive: true
   };
@@ -153,8 +153,10 @@ export class HomeComponent implements OnInit {
 
   clearChart(): void {
     this.totalVotes = 0;
-    this.barChartData = [];
     this.barChartLabels = [];
+    this.barChartData = [
+      { data: [0], label: 'Votes:', backgroundColor: '#ff4081' }
+    ];
   }
 
 }

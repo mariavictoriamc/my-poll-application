@@ -9,7 +9,7 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-4">
+    <div class="col-12 col-md-4">
       <div class="form">
         <form [formGroup]="form">
           <div class="row">
@@ -49,10 +49,10 @@
   
         <div class="footer">
           <div class="row">
-            <div class="col-12 col-md-6">
+            <div class="col-6">
               <p>{{ getNumberAnswersMade() }}/10 possible answers</p>
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-6">
               <button mat-raised-button (click)="reset()">Reset</button>
             </div>
           </div>
@@ -60,7 +60,7 @@
       </div>
     </div>
 
-    <div class="col-4" *ngIf="question$ | async">
+    <div class="col-12 col-md-4" *ngIf="question$ | async">
       <div class="poll">
         <h4>{{ question$ | async }}</h4>
 
@@ -78,7 +78,7 @@
       </div>
     </div>
 
-    <div class="col-4" *ngIf="question$ | async">
+    <div class="col-12 col-md-4" *ngIf="question$ | async">
       <div class="chart">
         <h4>{{ question$ | async }}</h4>
 
