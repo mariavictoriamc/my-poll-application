@@ -83,8 +83,7 @@
         <h4>{{ question$ | async }}</h4>
 
         <canvas #chart baseChart id="chart" 
-          [datasets]="barChartData"
-          [labels]="barChartLabels"
+          [data]="barChartData"
           [options]="barChartOptions"
           [legend]="barChartLegend"
           [type]="barChartType">

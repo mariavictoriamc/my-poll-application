@@ -60,9 +60,10 @@ const reducerUpdateData = createReducer(INITIAL_STATE,
             ...state
         }
     }),
-    on(voteAnswerSuccess, (state) => {
+    on(voteAnswerSuccess, (state, action) => {
         return {
-            ...state
+            ...state,
+            answers: [...state?.answers, action?.data]
         }
     })
 )

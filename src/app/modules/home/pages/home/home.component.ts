@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
-import { ChartOptions, ChartType, ChartDataset } from 'chart.js';
+import { ChartType, ChartConfiguration,  } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/shared/redux/app-state';
-import * as updateDataSelectors from '../../redux/update-data-selectors';
 import { answerMaded, questionMaded, removeAnswer, reset, voteAnswer } from 'src/app/modules/home/redux/update-data-actions';
 import { Answer } from '../../interfaces/update-data-state';
+import * as updateDataSelectors from '../../redux/update-data-selectors';
 
 @Component({
   selector: 'app-home',
@@ -18,21 +18,27 @@ export class HomeComponent implements OnInit {
 
   @ViewChild(BaseChartDirective, { static: false }) chart!: BaseChartDirective;
 
+  barChartOptions: ChartConfiguration['options'] = {
+    responsive: true
+  };
+  barChartLegend: boolean = false;
+  barChartType: ChartType = 'bar';
+  barChartData: ChartConfiguration['data'] = {
+    datasets: [
+      {
+        data: [],
+        label: 'Votes:',
+        backgroundColor: '#3f51b5'
+      }
+    ],
+    labels: []
+  }
   form!: FormGroup;
   formRadios!: FormGroup;
   requiredField: string = 'Required field';
   question$!: Observable<string>;
   answers$!: Observable<any>;
   totalVotes: number = 0;
-  barChartOptions: ChartOptions = {
-    responsive: true
-  };
-  barChartType: ChartType = 'bar';
-  barChartLegend = false;
-  barChartLabels: string[] = [];
-  barChartData: ChartDataset[] = [
-    { data: [0], label: 'Votes:', backgroundColor: '#ff4081' }
-  ];
 
   constructor(
     private formBuilder: FormBuilder,
@@ -58,7 +64,28 @@ export class HomeComponent implements OnInit {
   get answersArray(): FormArray {
     return this.form.get('answersArray') as FormArray;
   }
-  
+
+  vote(): void {
+    const vote = this.formRadios.value;
+    for (let i = 0; i < this.barChartData.datasets.length; i++) {
+      for (let j = 0; j < this.barChartData.datasets[i].data.length; j++) {
+        if (vote?.radio === j) {
+          this.answers$.subscribe(answers => {
+            answers.map((answer: Answer, index: number) => {
+              // const data = Object.assign({}, answer, { id: answer?.id, text: answer?.text, voteNumber: this.sumNumber(answer?.voteNumber) });
+              this.barChartData.datasets[i].data[j] = this.sumNumber(answer?.voteNumber);
+              // this.store.dispatch(voteAnswer({data}));
+              return;
+            });
+          });
+        }
+      }
+    }
+    this.getSumVotesValue();
+    this.formRadios.reset();
+    this.updateChart();
+  }
+
   questionMaded(): void {
     const data = this.form.get('question')?.value;
     this.store.dispatch(questionMaded({data}));
@@ -77,6 +104,11 @@ export class HomeComponent implements OnInit {
       voteNumber: 0
     };
     this.store.dispatch(answerMaded({data}));
+    this.barChartData.datasets.forEach((item) => {
+      item.data.push(data.voteNumber);
+    });
+    this.barChartData?.labels?.push(answer?.value);
+    this.updateChart();
   }
 
   getLengthArray(): number {
@@ -106,57 +138,30 @@ export class HomeComponent implements OnInit {
     return number?.length;
   }
 
-  vote(): void {
-    const vote = this.formRadios.value;
-    let startLabels: any[] = [];
-    let startData: any[] = [];
-    let newAnswers: any[] = [];
+  getSumVotesValue(): any {
     this.answers$.subscribe(answers => {
-      answers.forEach((answer: Answer) => {
-        startLabels.push(answer?.text);
-        if (answer?.id === vote?.radio) {
-          const newAnswer = Object.assign({}, answer, { voteNumber: (answer?.voteNumber)+1 });
-          startData.push(newAnswer?.voteNumber);
-          newAnswers.push(newAnswer);
-          return {
-            ...newAnswer
-          };
-        }
-        newAnswers.push(answer);
-        startData.push(answer?.voteNumber);
-        return answer;
-      });
-      this.barChartLabels = startLabels;
-      this.barChartData = [{ data: startData, label: 'Votes:', backgroundColor: '#3f51b5' }];
-      this.formRadios.reset();
-      this.updateChart();
-      return;
+      this.totalVotes = answers.map((answer: Answer) => answer?.voteNumber).reduce((accumulator: any, currentValue: any) => accumulator + currentValue, 0);
     });
-    this.getSumContractsValue(newAnswers);
-    const data = newAnswers;
-    this.store.dispatch(voteAnswer({data}));
-    return;
-  }
-
-  getSumContractsValue(answers: Answer[]): any {
-    const values: any[] = [];
-    answers?.map((answer: Answer) => {
-      values.push(answer?.voteNumber);
-    });
-    const reducer = (accumulator: any, currentValue: any) => accumulator + currentValue;
-    this.totalVotes = values?.reduce(reducer, 0);
   }
 
   updateChart(): void {
-    this.chart?.chart?.update();
+    this.chart?.update();
   }
 
   clearChart(): void {
     this.totalVotes = 0;
-    this.barChartLabels = [];
-    this.barChartData = [
-      { data: [0], label: 'Votes:', backgroundColor: '#ff4081' }
+    this.barChartData.datasets =  [
+      {
+        data: [],
+        label: 'Votes:',
+        backgroundColor: '#3f51b5'
+      }
     ];
+    this.barChartData.labels = [];
+  }
+
+  private sumNumber(voteNumber: number): number {
+    return Math.floor(voteNumber + 1);
   }
 
 }
