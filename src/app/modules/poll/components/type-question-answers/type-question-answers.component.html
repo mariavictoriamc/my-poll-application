@@ -1,0 +1,48 @@
+<div class="form">
+  <form [formGroup]="form">
+    <div class="row">
+      <div class="col-12">
+        <mat-form-field>
+          <mat-label>Question</mat-label>
+          <input matInput placeholder="Question" formControlName="question" maxlength="80" (blur)="questionMaded()">
+          <mat-hint>Press tab to add question</mat-hint>
+          <mat-error *ngIf="question?.invalid || (question?.dirty || question?.touched)">{{ requiredField }}</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <ng-container formArrayName="answersArray">
+      <div class="mt-2" *ngFor="let answer of answersArray?.controls; let i = index">
+        <div class="row">
+          <div class="col-8">
+            <mat-form-field>
+              <mat-label>Type an answer</mat-label>
+              <input matInput placeholder="Type an answer" maxlength="80" [formControlName]="i">
+            </mat-form-field>
+          </div>
+          <div class="col-2">
+            <button mat-mini-fab color="primary" class="icon-add" (click)="addAnswer(answer, i)">
+              <i class="icofont-ui-add"></i>
+            </button>
+          </div>
+          <div class="col-2">
+            <button mat-mini-fab color="warn" class="icon-remove" (click)="removeAnswer(i)">
+              <i class="icofont-ui-delete"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </form>
+
+  <div class="footer">
+    <div class="row">
+      <div class="col-6">
+        <p>{{ getNumberAnswersMade() }}/10 possible answers</p>
+      </div>
+      <div class="col-6">
+        <button mat-raised-button (click)="reset()">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>

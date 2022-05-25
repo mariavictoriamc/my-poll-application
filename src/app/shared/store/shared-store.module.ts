@@ -15,4 +15,4 @@ import reducers from './reducers';
       })
     ]
 })
-export class ReduxModule {}
+export class SharedStoreModule {}

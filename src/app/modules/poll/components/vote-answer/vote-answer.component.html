@@ -1,0 +1,15 @@
+<div class="poll">
+  <h4>{{ question$ | async }}</h4>
+
+  <form *ngIf="getLengthArray() > 1" [formGroup]="formRadios">
+    <mat-radio-group class="radio-group" formControlName="radio">
+      <mat-radio-button class="radio-button" color="primary" *ngFor="let answer of (answers$ | async)" [value]="answer?.id">
+        {{ answer?.text }}
+      </mat-radio-button>
+    </mat-radio-group>
+
+    <div class="poll-button">
+      <button mat-raised-button color="primary" (click)="vote()" [disabled]="!formRadios.valid">Vote</button>
+    </div>
+  </form>
+</div>

@@ -4,12 +4,12 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
     {
         path: '',
-        redirectTo: '/home',
+        redirectTo: '/poll',
         pathMatch: 'full'
     },
     {
-        path: 'home',
-        loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule)
+        path: 'poll',
+        loadChildren: () => import('./modules/poll/poll.module').then(m => m.PollModule)
     }
 ];
 

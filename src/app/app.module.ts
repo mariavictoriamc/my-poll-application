@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { ReduxModule } from './shared/redux/redux.module';
+import { SharedStoreModule } from './shared/store/shared-store.module';
 
 @NgModule({
   declarations: [
@@ -13,7 +13,7 @@ import { ReduxModule } from './shared/redux/redux.module';
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
-    ReduxModule
+    SharedStoreModule
   ],
   bootstrap: [AppComponent]
 })

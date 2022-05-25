@@ -1,0 +1,24 @@
+<app-header></app-header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="title">
+        <h2>Type a question to start:</h2>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12 col-md-4">
+      <app-type-question-answers></app-type-question-answers>
+    </div>
+
+    <div class="col-12 col-md-4" *ngIf="question$ | async">
+      <app-vote-answer></app-vote-answer>
+    </div>
+
+    <div class="col-12 col-md-4" *ngIf="question$ | async">
+      <app-chart-answers></app-chart-answers>
+    </div>
+  </div>
+</div>

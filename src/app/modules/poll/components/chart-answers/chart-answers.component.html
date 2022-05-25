@@ -1,0 +1,14 @@
+<div class="chart">
+  <h4>{{ question$ | async }}</h4>
+
+  <canvas #chart baseChart id="chart" 
+    [data]="barChartData"
+    [options]="barChartOptions"
+    [legend]="barChartLegend"
+    [type]="barChartType">
+  </canvas>
+
+  <div class="total-votes">
+    <p>Total votes: {{ totalVotes }}</p>
+  </div>
+</div>
