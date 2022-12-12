@@ -3,8 +3,10 @@ import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Valida
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/shared/store/app-state';
-import { answerMaded, questionMaded, removeAnswer, reset } from '../../store/update-data-actions';
-import * as updateDataSelectors from '../../store/update-data-selectors';
+import { PollService } from '../../services/poll.service';
+import { answerMaded, questionMaded, removeAnswer, reset } from '../../store/update-data/update-data-actions';
+import { addLabelChart, clearChart } from '../../store/chart-answers/chart-answers-actions';
+import * as updateDataSelectors from '../../store/update-data/update-data-selectors';
 
 @Component({
   selector: 'app-type-question-answers',
@@ -19,7 +21,8 @@ export class TypeQuestionAnswersComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private pollService: PollService
   ) {}
 
   ngOnInit(): void {
@@ -31,7 +34,9 @@ export class TypeQuestionAnswersComponent implements OnInit {
     this.answers$ = this.store.pipe(select(updateDataSelectors?.getAnswers));
   }
 
-  get question() { return this.form.get('question'); }
+  get question() { 
+    return this.form.get('question');
+  }
 
   get answersArray(): FormArray {
     return this.form.get('answersArray') as FormArray;
@@ -41,6 +46,7 @@ export class TypeQuestionAnswersComponent implements OnInit {
     const data = this.form.get('question')?.value;
     this.store.dispatch(questionMaded({data}));
     this.answersArray.push(this.newAnswer());
+    this.pollService.answersArraySource.next(this.answersArray?.length);
   }
 
   newAnswer(): FormControl {
@@ -49,32 +55,32 @@ export class TypeQuestionAnswersComponent implements OnInit {
 
   addAnswer(answer: AbstractControl, i: number): void {
     this.answersArray.push(this.newAnswer());
+    this.pollService.answersArraySource.next(this.answersArray?.length);
     const data = {
       id: i,
       text: answer?.value,
       voteNumber: 0
     };
     this.store.dispatch(answerMaded({data}));
-    // this.barChartData.datasets.forEach((item) => {
-    //   item.data.push(data.voteNumber);
-    // });
-    // this.barChartData?.labels?.push(answer?.value);
-    // this.updateChart();
+    this.store.dispatch(addLabelChart({data: answer?.value}));
+    this.pollService.updateChartSource.next(true);
   }
 
   removeAnswer(index: number): void {
     this.answersArray.removeAt(index);
+    this.pollService.answersArraySource.next(this.answersArray?.length);
     this.store.dispatch(removeAnswer({index}));
-    // this.clearChart();
-    // this.updateChart();
+    this.pollService.updateChartSource.next(true);
+    this.store.dispatch(clearChart());
   }
 
   reset(): void {
     this.answersArray.clear();
+    this.pollService.answersArraySource.next(this.answersArray?.length);
     this.form.reset();
     this.store.dispatch(reset());
-    // this.clearChart();
-    // this.updateChart();
+    this.pollService.updateChartSource.next(true);
+    this.store.dispatch(clearChart());
   }
 
   getNumberAnswersMade(): number {

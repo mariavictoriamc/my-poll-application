@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { AppState } from 'src/app/shared/store/app-state';
-import * as updateDataSelectors from '../../store/update-data-selectors';
+import * as updateDataSelectors from '../../store/update-data/update-data-selectors';
 
 @Component({
   selector: 'app-poll',

@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Store, select } from '@ngrx/store';
-import { ChartConfiguration, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { AppState } from 'src/app/shared/store/app-state';
 import { Answer } from '../../interfaces/update-data-state';
-import * as updateDataSelectors from '../../store/update-data-selectors';
+import { PollService } from '../../services/poll.service';
+import * as updateDataSelectors from '../../store/update-data/update-data-selectors';
+import * as chartAnswersSelectors from '../../store/chart-answers/chart-answers-selectors';
 
 @Component({
   selector: 'app-chart-answers',
@@ -17,15 +19,15 @@ export class ChartAnswersComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: false }) chart!: BaseChartDirective;
 
   barChartOptions: ChartConfiguration['options'] = {
-    responsive: true
+    responsive: true,
   };
   barChartLegend: boolean = false;
   barChartType: ChartType = 'bar';
-  barChartData: ChartConfiguration['data'] = {
+  barChartData: ChartData<'bar'> = {
     datasets: [
       {
         data: [],
-        label: 'Votes:',
+        label: 'Votes',
         backgroundColor: '#3f51b5'
       }
     ],
@@ -34,22 +36,52 @@ export class ChartAnswersComponent implements OnInit {
   totalVotes: number = 0;
   question$!: Observable<string>;
   answers$!: Observable<any>;
+  chartAnswers$!: Observable<any>;
+  labels$!: Observable<any>;
 
-  constructor(private store: Store<AppState>) {}
+  constructor(
+    private store: Store<AppState>,
+    private pollService: PollService
+  ) {}
 
   ngOnInit(): void {
     this.question$ = this.store.pipe(select(updateDataSelectors?.getQuestion));
     this.answers$ = this.store.pipe(select(updateDataSelectors?.getAnswers));
-  }
+    this.chartAnswers$ = this.store.pipe(select(updateDataSelectors?.getChartAnswers));
+    this.labels$ = this.store.pipe(select(chartAnswersSelectors?.getLabels));
+    
+    this.updateChart();
 
-  getSumVotesValue(): any {
     this.answers$.subscribe(answers => {
-      this.totalVotes = answers.map((answer: Answer) => answer?.voteNumber).reduce((accumulator: any, currentValue: any) => accumulator + currentValue, 0);
+      if (answers?.length) {
+        this.chartAnswers$.subscribe(chartAnswers => {
+          if (chartAnswers?.length) {
+            chartAnswers.map((answer: Answer) => {
+              const indexNum = answers.findIndex((el: any) => el?.text === answer?.text);
+              this.barChartData.datasets[0].data[indexNum] = answer?.voteNumber;
+              this.updateChart();
+              this.getSumVotesValue();
+              return;
+            });
+          }
+        });
+      }
+    });
+
+    this.labels$.subscribe(labels => {
+      if (labels) {
+        this.barChartData?.labels?.push(labels);
+        this.updateChart();
+      }
     });
   }
 
   updateChart(): void {
-    this.chart?.update();
+    this.pollService.updateChart.subscribe(update => {
+      if (update) {
+        this.chart?.update();
+      }
+    });
   }
 
   clearChart(): void {
@@ -57,11 +89,22 @@ export class ChartAnswersComponent implements OnInit {
     this.barChartData.datasets =  [
       {
         data: [],
-        label: 'Votes:',
+        label: 'Votes',
         backgroundColor: '#3f51b5'
       }
     ];
     this.barChartData.labels = [];
+  }
+
+  private getSumVotesValue(): void {
+    const values: number[] = [];
+    this.chartAnswers$.subscribe(chartAnswers => {
+      chartAnswers.map((answer: Answer) => {
+        values.push(answer?.voteNumber);
+      });
+      const reducer = ((accumulator: number, currentValue: number) => accumulator + currentValue);
+      this.totalVotes = values.reduce(reducer);
+    });
   }
 
 }

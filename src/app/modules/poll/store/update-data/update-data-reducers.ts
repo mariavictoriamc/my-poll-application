@@ -1,10 +1,11 @@
 import { Action, createReducer, on } from '@ngrx/store';
-import { UpdateDataState } from '../interfaces/update-data-state';
+import { UpdateDataState } from '../../interfaces/update-data-state';
 import { questionMaded, questionMadedSuccess, answerMaded, answerMadedSuccess, reset, resetSuccess, removeAnswer, removeAnswerSuccess, voteAnswerSuccess, voteAnswer } from './update-data-actions';
 
 const INITIAL_STATE: UpdateDataState = {
     question: '',
-    answers: []
+    answers: [],
+    chartAnswers: []
 }
 
 const reducerUpdateData = createReducer(INITIAL_STATE,
@@ -63,10 +64,23 @@ const reducerUpdateData = createReducer(INITIAL_STATE,
     on(voteAnswerSuccess, (state, action) => {
         return {
             ...state,
-            answers: [...state?.answers, action?.data]
+            answers: [...state?.answers],
+            chartAnswers: updateObjectInArray([action?.data], action?.data)
         }
     })
 )
+
+function updateObjectInArray(array: any, action: any) {
+    return array.map((item: any, index: number) => {
+        if (index !== action.id) {
+            return item;
+        }
+        return {
+            ...item,
+            ...action
+        }
+    });
+}
 
 export function updateDataReducer(state: UpdateDataState = INITIAL_STATE, action: Action) {
     return reducerUpdateData(state, action);
