@@ -57,11 +57,10 @@ export class ChartAnswersComponent implements OnInit {
         this.chartAnswers$.subscribe(chartAnswers => {
           if (chartAnswers?.length) {
             chartAnswers.map((answer: Answer) => {
-              const indexNum = answers.findIndex((el: any) => el?.text === answer?.text);
-              this.barChartData.datasets[0].data[indexNum] = answer?.voteNumber;
+              const indexNum = answers.findIndex((el: any) => el?.id === answer?.id && el?.text === answer?.text);
+              this.barChartData.datasets[0].data[indexNum] = this.sumNumber(answer?.voteNumber);
               this.updateChart();
               this.getSumVotesValue();
-              return;
             });
           }
         });
@@ -72,14 +71,6 @@ export class ChartAnswersComponent implements OnInit {
       if (labels) {
         this.barChartData?.labels?.push(labels);
         this.updateChart();
-      }
-    });
-  }
-
-  updateChart(): void {
-    this.pollService.updateChart.subscribe(update => {
-      if (update) {
-        this.chart?.update();
       }
     });
   }
@@ -96,6 +87,14 @@ export class ChartAnswersComponent implements OnInit {
     this.barChartData.labels = [];
   }
 
+  private updateChart(): void {
+    this.pollService.updateChart.subscribe(update => {
+      if (update) {
+        this.chart?.update();
+      }
+    });
+  }
+
   private getSumVotesValue(): void {
     const values: number[] = [];
     this.chartAnswers$.subscribe(chartAnswers => {
@@ -105,6 +104,10 @@ export class ChartAnswersComponent implements OnInit {
       const reducer = ((accumulator: number, currentValue: number) => accumulator + currentValue);
       this.totalVotes = values.reduce(reducer);
     });
+  }
+
+  private sumNumber(voteNumber: number): number {
+    return Math.floor(voteNumber + (Math.floor(Math.random() * 10)));
   }
 
 }

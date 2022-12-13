@@ -59,7 +59,7 @@ export class TypeQuestionAnswersComponent implements OnInit {
     const data = {
       id: i,
       text: answer?.value,
-      voteNumber: 0
+      voteNumber: 10
     };
     this.store.dispatch(answerMaded({data}));
     this.store.dispatch(addLabelChart({data: answer?.value}));

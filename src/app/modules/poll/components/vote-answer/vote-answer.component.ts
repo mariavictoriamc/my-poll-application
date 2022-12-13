@@ -51,15 +51,11 @@ export class VoteAnswerComponent implements OnInit {
     const data = {
       id: vote?.id,
       text: vote?.text,
-      voteNumber: this.sumNumber(vote?.voteNumber)
+      voteNumber: vote?.voteNumber
     }
     this.store.dispatch(voteAnswer({data: data}));
     this.formRadios.reset();
     this.pollService.updateChartSource.next(true);
-  }
-
-  private sumNumber(voteNumber: number): number {
-    return Math.floor(voteNumber + 10);
   }
 
 }
